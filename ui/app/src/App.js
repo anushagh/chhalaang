@@ -38,7 +38,7 @@ function App() {
   const handleSendAudio = async (blob) => {
     try {
       const data = await sendVoiceQuery(blob);
-      const text = data.text || "No response from backend";
+      const text = data.text_response || "No response from backend";
       setResponseText(text);
       speakText(text);
     } catch (err) {
