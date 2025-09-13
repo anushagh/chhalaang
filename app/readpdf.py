@@ -26,7 +26,7 @@ for file in source_folder.iterdir():
         # 3. Generate embeddings (OpenAI here, could be Hugging Face too)
         embeddings = OpenAIEmbeddings(
             model='text-embedding-3-large',
-            api_key='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'
+            api_key=''
         )
         # # 4. Create FAISS vector store
         db = FAISS.from_documents(chunks, embeddings)
