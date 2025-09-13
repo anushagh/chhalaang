@@ -42,7 +42,7 @@ function App() {
       setResponseText(text);
       speakText(text);
     } catch (err) {
-      alert("Backend not reachable. Make sure your mock backend is running on port 8000.");
+      alert("Backend not reachable. Make sure your backend is running on port 8000.");
     }
   };
 
