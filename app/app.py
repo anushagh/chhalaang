@@ -19,7 +19,7 @@ def transcribe_audio(file_path: str) -> str:
     return transcription
 
 
-@app.post("/voice-query/")
+@app.post("/voice-query")
 async def process_audio(file: UploadFile = File(...)):
     """
     Receive audio from frontend, transcribe it, and get AI assistant response.
