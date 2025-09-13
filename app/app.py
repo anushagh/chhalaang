@@ -6,7 +6,7 @@ from scipy.io import wavfile
 from faster_whisper import WhisperModel
 
 import voice_service as vs
-from app.rag.AIVoiceAssisstant import AIVoiceAssistant
+from rag.AIVoiceAssisstant import AIVoiceAssistant
 
 DEFAULT_MODEL_SIZE = "medium"
 DEFAULT_CHUNK_LENGTH = 10
