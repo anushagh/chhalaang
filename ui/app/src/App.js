@@ -1,41 +1,70 @@
-import React, { useState, useEffect } from "react";
-import { useRecorder } from "./hooks/useRecorder";
-import { sendAudio } from "./services/api";
+import  { useState, useRef } from "react";
+import { sendVoiceQuery } from "./services/api";
+import "./App.css";
 
 function App() {
-  const { recording, audioBlob, startRecording, stopRecording } = useRecorder();
+  const [recording, setRecording] = useState(false);
   const [responseText, setResponseText] = useState("");
-  const [ttsAudio, setTtsAudio] = useState(null);
+  const mediaRecorder = useRef(null);
+  const chunks = useRef([]);
 
-  useEffect(() => {
-    if (audioBlob) handleSendAudio();
-  }, [audioBlob]);
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder.current = new MediaRecorder(stream);
+      chunks.current = [];
 
-  const handleSendAudio = async () => {
-    const res = await sendAudio(audioBlob);
-    setResponseText(res.text);
-
-    
-    if (res.audio_url) {
-      const audio = new Audio(res.audio_url);
-      audio.play();
-      setTtsAudio(audio);
+      mediaRecorder.current.ondataavailable = (e) => chunks.current.push(e.data);
+      mediaRecorder.current.start();
+      setRecording(true);
+    } catch (err) {
+      console.error("Error accessing microphone:", err);
+      alert("Microphone access is required!");
     }
   };
 
-  return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Porter Saathi</h1>
-      <button onClick={recording ? stopRecording : startRecording}>
-        {recording ? "Stop Recording" : "Start Recording"}
-      </button>
+  const stopRecording = () => {
+    if (!mediaRecorder.current) return;
 
-      {responseText && (
-        <div style={{ marginTop: "1rem" }}>
-          <h3>AI Response:</h3>
-          <p>{responseText}</p>
-        </div>
-      )}
+    mediaRecorder.current.onstop = async () => {
+      const blob = new Blob(chunks.current, { type: "audio/webm" });
+      await handleSendAudio(blob);
+    };
+
+    mediaRecorder.current.stop();
+    setRecording(false);
+  };
+
+  const handleSendAudio = async (blob) => {
+    try {
+      const data = await sendVoiceQuery(blob);
+      const text = data.text || "No response from backend";
+      setResponseText(text);
+      speakText(text);
+    } catch (err) {
+      alert("Backend not reachable. Make sure your mock backend is running on port 8000.");
+    }
+  };
+
+  const speakText = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "hi-IN"; // You can make this dynamic for multi-lingual support
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>Porter Saathi Voice Prototype</h1>
+        <button onClick={recording ? stopRecording : startRecording}>
+          {recording ? "Stop Recording" : "Start Recording"}
+        </button>
+        {responseText && (
+          <p>
+            <strong>AI Response:</strong> {responseText}
+          </p>
+        )}
+      </header>
     </div>
   );
 }
