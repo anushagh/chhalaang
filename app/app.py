@@ -6,7 +6,7 @@ from scipy.io import wavfile
 from faster_whisper import WhisperModel
 
 import voice_service as vs
-from app.rag.AIVoiceAssisstant import AIVoiceAssistant
+from rag.AIVoiceAssisstant import AIVoiceAssistant
 
 DEFAULT_MODEL_SIZE = "medium"
 DEFAULT_CHUNK_LENGTH = 10
@@ -56,7 +56,7 @@ def transcribe_audio(model, file_path):
 def main():
     
     model_size = DEFAULT_MODEL_SIZE + ".en"
-    model = WhisperModel(model_size, device="cuda", compute_type="float16", num_workers=10)
+    model = WhisperModel(model_size, device="cpu")
     
     audio = pyaudio.PyAudio()
     stream = audio.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=1024)
