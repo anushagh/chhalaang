@@ -1,4 +1,5 @@
 import os
+import uvicorn
 from fastapi import FastAPI, File, UploadFile
 from faster_whisper import WhisperModel
 from rag.AIVoiceAssisstant import AIVoiceAssistant
@@ -18,7 +19,7 @@ def transcribe_audio(file_path: str) -> str:
     return transcription
 
 
-@app.post("/process_audio/")
+@app.post("/voice-query/")
 async def process_audio(file: UploadFile = File(...)):
     """
     Receive audio from frontend, transcribe it, and get AI assistant response.
@@ -43,3 +44,8 @@ async def process_audio(file: UploadFile = File(...)):
 
     except Exception as e:
         return {"error": str(e)}
+
+
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
