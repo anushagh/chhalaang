@@ -37,7 +37,7 @@ for file in source_folder.iterdir():
         # #         print(page.extract_text()) 
 
         # # Move the file to destination folder
-        # shutil.move(str(file), destination_folder / file.name)
+        shutil.move(str(file), destination_folder / file.name)
         # print(f"Moved {file.name} to {destination_folder}")
 
         # # 5. Query
