@@ -2,6 +2,7 @@ import os
 import uvicorn
 from fastapi import FastAPI, File, UploadFile
 from faster_whisper import WhisperModel
+from fastapi.middleware.cors import CORSMiddleware  
 from rag.AIVoiceAssisstant import AIVoiceAssistant
 
 # Initialize Whisper model and AI assistant
@@ -11,6 +12,17 @@ ai_assistant = AIVoiceAssistant()
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",  # React dev server
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def transcribe_audio(file_path: str) -> str:
     """Transcribe audio file using WhisperModel."""
