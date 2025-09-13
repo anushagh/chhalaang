@@ -48,7 +48,7 @@ function App() {
 
   const speakText = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "hi-IN"; // You can make this dynamic for multi-lingual support
+    utterance.lang = "en-US"; // You can make this dynamic for multi-lingual support
     window.speechSynthesis.speak(utterance);
   };
 
